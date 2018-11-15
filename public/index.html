@@ -13,9 +13,18 @@
 				<div class="form-field">
 					<label>Display Name</label><input type="text" autofocus name="name" />
 				</div>
-				<div class="form-field"><label>Room Name</label><input type="text" name="room" /></div>
+				<div class="form-field">
+					<label>Room Name</label><input id="room-name" type="text" name="room" />
+				</div>
 				<div class="form-field"><button>Join</button></div>
 			</form>
+			<div class="form-field">
+				<label>Active Rooms</label>
+				<select id="activeRooms" type="select" name="select"> </select>
+			</div>
 		</div>
+		<script src="/socket.io/socket.io.js"></script>
+		<script src="./scripts/libs/jquery-3.3.1.slim.min.js"></script>
+		<script src="./scripts/index.js"></script>
 	</body>
 </html>

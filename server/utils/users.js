@@ -25,6 +25,13 @@ class Users {
 
 		return namesArray;
 	}
+
+	getActiveRooms() {
+		const rooms = this.users.map(user => {
+			return user.room;
+		});
+		return [...new Set(rooms)].sort();
+	}
 }
 
 module.exports = { Users };

@@ -17,23 +17,26 @@ app.use(express.static(publicPath));
 
 io.on('connection', socket => {
 	console.log('New user connected');
-
 	socket.on('join', (params, callback) => {
 		if (!isRealString(params.name) || !isRealString(params.room)) {
 			return callback('Name and room name are required');
 		}
-		socket.join(params.room);
+		caseInsensitiveRoom = params.room.toLowerCase();
+		socket.join(caseInsensitiveRoom);
 		users.removeUser(socket.id);
-		users.addUser(socket.id, params.name, params.room);
+		users.addUser(socket.id, params.name, caseInsensitiveRoom);
 
-		io.to(params.room).emit('updateUserList', users.getUserList(params.room));
+		io.to(caseInsensitiveRoom).emit('updateUserList', users.getUserList(caseInsensitiveRoom));
 		socket.emit('newMessage', generateMessage('Admin', 'Welcome to the chat app'));
 		socket.broadcast
-			.to(params.room)
+			.to(caseInsensitiveRoom)
 			.emit('newMessage', generateMessage('Admin', `${params.name} has joined the chat`));
+		io.emit('getActiveRooms', users.getActiveRooms());
 
 		callback();
 	});
+
+	io.emit('getActiveRooms', users.getActiveRooms());
 
 	socket.on('createMessage', (message, callback) => {
 		const user = users.getUser(socket.id);
@@ -56,6 +59,7 @@ io.on('connection', socket => {
 
 	socket.on('disconnect', () => {
 		const user = users.removeUser(socket.id);
+		io.emit('getActiveRooms', users.getActiveRooms());
 
 		if (user) {
 			io.to(user.room).emit('updateUserList', users.getUserList(user.room));

@@ -54,4 +54,9 @@ describe('Users', () => {
 		const userList = users.getUserList('react');
 		expect(userList).toEqual(['john']);
 	});
+
+	it('should return active rooms', () => {
+		const rooms = users.getActiveRooms();
+		expect(rooms).toEqual(['office', 'react']);
+	});
 });
